@@ -13,9 +13,10 @@ let options = {
 };
 
 // let url = 'http://www.sqlite.org/2016/sqlite-dll-win64-x64-3130000.zip';
-let url = 'http://192.168.1.205:10060/application/download/5811c2bce31e6e1aa94db138'; 
+let url = 'http://192.168.1.205:10060/application/download/5811c2bce31e6e1aa94db138';
 // let url = 'https://gw.alicdn.com/bao/uploaded/LB1vovgMVXXXXXaXVXXXXXXXXXX.zip';
-// let url = 'https://img.alicdn.com/tps/TB1uu1rNVXXXXaxXXXXXXXXXXXX-160-280.jpg';//错误测试
+// let url = 'https://img.alicdn.com/tps/TB1uu1rNVXXXXaxXXXXXXXXXXXX-160-280.jpg';//解压错误测试
+// let url = 'http://192.168.1.153/info/iproces';//404测试
 
 let download = new Download(url, options, { 'abc': 'hahaha' });
 
@@ -25,32 +26,32 @@ const handle = {
         取消
      */
     destroyed: function(module) {
-        console.log('Download destroyed.');
+        console.log('Download destroyed.', module);
     },
     /*
         出错
      */
     error: function(code, err, module) {
-        console.log('Download or unzip error : ', code, err);
+        console.log('Download or unzip error : ', code, err, module);
     },
     /*
         正在下载
      */
     started: function(state, module) {
-        console.log('Download progress: ' + state.progress + ' %');
+        console.log('Download progress: ' + state.progress + ' %', module);
     },
     /*
         下载成功
      */
     downloadFinished: function(module) {
-        console.log('Download completed');
+        console.log('Download completed', module);
         // download.destroy();
     },
     /*
         下载并解压成功
      */
     finished: function(module) {
-        console.log('Download and unzip completed !');
+        console.log('Download and unzip completed !', module);
     }
 };
 

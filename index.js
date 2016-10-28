@@ -40,7 +40,7 @@ class Downloader {
 
         progress(self._req, { throttle: 1000 }) //throttle the progress event to 1000ms
             .on('response', (res) => {
-                if (res.headers['content-type'].includes('application/json')) { //服务自定义错误
+                if (res.statusCode != 200 || res.headers['content-type'].includes('application/json')) { //服务自定义错误
                     res.setEncoding('utf-8');
                     res.on('data', function(data) {
                         handle.error(errCode.server, data, privateModule);
@@ -69,7 +69,6 @@ class Downloader {
                         //解压完成事件
                         handle.finished(privateModule);
                     });
-
                     unziper.on('error', (err) => {
                         //解压错误事件
                         handle.error(errCode.unzip, err, privateModule);
@@ -79,10 +78,8 @@ class Downloader {
 
                     //下载完成事件
                     handle.downloadFinished(privateModule);
-                    // console.log('start unzip...');
-
                     unzipFile.pipe(unziper); //开始解压
-                    // console.log('unlink unzip...');
+
                     try {
                         fs.unlinkSync(tempPath); //尝试删除 避免解压过程中取消后的重复删除
                     } catch (err) {
@@ -96,11 +93,9 @@ class Downloader {
             .on('abort', () => {
                 if (fs.existsSync(tempPath)) { //下载过程中取消
                     if (self._unzipStream) { //解压过程中取消
-                        // console.log('abort unzipFile close');
                         //结束解压
                         self._unzipStream.close();
                     }
-                    // console.log('abort fs unlink');
                     fs.unlink(tempPath);
                 }
                 handle.destroyed(privateModule);
@@ -108,6 +103,9 @@ class Downloader {
             .pipe(fs.createWriteStream(tempPath));
     }
 
+    /**
+     * 取消下载
+     */
     destroy() {
         this._req.abort();
     }
