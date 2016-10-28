@@ -1,5 +1,7 @@
 downloader
 ------------------
+zip下载解压
+------------------
 #使用方法
 >npm install https://github.com/a631807682/downloader.git
 
