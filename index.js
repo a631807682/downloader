@@ -49,7 +49,6 @@ class Downloader {
                 }
             })
             .on('progress', (state) => {
-
                 let formatState = {
                     progress: parseFloat(state.percentage * 100).toFixed(2)
                 };
@@ -62,7 +61,6 @@ class Downloader {
             })
             .on('end', () => {
                 if (fs.existsSync(tempPath)) {
-
                     //解压实例
                     let unziper = unzip.Extract({ path: savePath });
                     unziper.on('close', () => {
@@ -85,7 +83,6 @@ class Downloader {
                     } catch (err) {
                         // console.log('unlink...',err);
                     }
-
                 } else {
                     //下载未完成时abort
                 }
@@ -109,7 +106,6 @@ class Downloader {
     destroy() {
         this._req.abort();
     }
-
 };
 
 module.exports = Downloader;

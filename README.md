@@ -16,6 +16,8 @@ zip下载解压
 示例代码
 ------------------
 ```
+const Download = require('downloader');
+
 let options = {
     rejectUnauthorized: false,
     headers: {

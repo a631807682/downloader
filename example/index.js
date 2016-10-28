@@ -55,7 +55,6 @@ const handle = {
     }
 };
 
-
 download.start('./output', handle);
 
 setTimeout(function() {
