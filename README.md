@@ -1,6 +1,7 @@
 downloader
 ==================
-zip下载解压
+zip下载解压   
+与jwiDownloader区别:修复临时文件删除失效,修复解压取消同时发生报错,修复解压异常捕获失败,添加错误代码.
 
 使用方法
 ------------------
@@ -9,8 +10,6 @@ zip下载解压
 示例代码
 ------------------
 ```
-const Download = require('downloader');
-
 let options = {
     rejectUnauthorized: false,
     headers: {
@@ -26,6 +25,7 @@ let options = {
 // let url = 'http://www.sqlite.org/2016/sqlite-dll-win64-x64-3130000.zip';
 let url = 'http://192.168.1.205:10060/application/download/5811c2bce31e6e1aa94db138'; 
 // let url = 'https://gw.alicdn.com/bao/uploaded/LB1vovgMVXXXXXaXVXXXXXXXXXX.zip';
+// let url = 'https://img.alicdn.com/tps/TB1uu1rNVXXXXaxXXXXXXXXXXXX-160-280.jpg';//错误测试
 
 let download = new Download(url, options, { 'abc': 'hahaha' });
 
@@ -40,8 +40,8 @@ const handle = {
     /*
         出错
      */
-    error: function(err, module) {
-        console.log('Download  error : ' + err);
+    error: function(code, err, module) {
+        console.log('Download or unzip error : ', code, err);
     },
     /*
         正在下载
@@ -69,6 +69,23 @@ download.start('./output', handle);
 
 setTimeout(function() {
     // download.destroy();
-},1000);
+}, 1000);
 
+```
+
+错误定义
+------------------
+```
+    /*
+        http错误
+     */
+    http: 1,
+    /*
+        服务器自定义错误
+     */
+    server: 2,
+    /*
+        解压错误
+     */
+    unzip: 3
 ```

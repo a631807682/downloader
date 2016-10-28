@@ -2,7 +2,8 @@ const fs = require('fs'),
     request = require('request'),
     progress = require('request-progress'),
     unzip = require('unzip2'),
-    defaultHandle = require('./lib/defaultHandle');
+    defaultHandle = require('./lib/defaultHandle'),
+    errCode = require('./lib/errCode');
 
 //临时文件目录
 let tempDirectory = './downloadtemp';
@@ -37,12 +38,12 @@ class Downloader {
         let privateModule = self._privateModule; //自定义标记
         let tempPath = self._tempPath; //临时文件
 
-        progress(self._req, { throttle: 1000 })//throttle the progress event to 1000ms
+        progress(self._req, { throttle: 1000 }) //throttle the progress event to 1000ms
             .on('response', (res) => {
                 if (res.headers['content-type'].includes('application/json')) { //服务自定义错误
                     res.setEncoding('utf-8');
                     res.on('data', function(data) {
-                        handle.error('server error ' + data, privateModule);
+                        handle.error(errCode.server, data, privateModule);
                         self._req.abort(); //结束request
                     });
                 }
@@ -57,7 +58,7 @@ class Downloader {
             })
             .on('error', (err) => {
                 //错误事件
-                handle.error(err, privateModule);
+                handle.error(errCode.http, err, privateModule);
             })
             .on('end', () => {
                 if (fs.existsSync(tempPath)) {
@@ -68,12 +69,18 @@ class Downloader {
                         //解压完成事件
                         handle.finished(privateModule);
                     });
+
+                    unziper.on('error', (err) => {
+                        //解压错误事件
+                        handle.error(errCode.unzip, err, privateModule);
+                    });
                     // 需要解压的文件流
                     let unzipFile = self._unzipStream = fs.createReadStream(tempPath);
 
                     //下载完成事件
                     handle.downloadFinished(privateModule);
                     // console.log('start unzip...');
+
                     unzipFile.pipe(unziper); //开始解压
                     // console.log('unlink unzip...');
                     try {
