@@ -1,6 +1,5 @@
 downloader
 ==================
-> Version: v0.0.1  
 zip下载解压
 
 使用方法
