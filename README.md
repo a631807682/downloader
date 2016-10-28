@@ -1,10 +1,10 @@
-download
+downloader
 ------------------
 #使用方法
 >npm install https://github.com/a631807682/downloader.git
 
 ```
-const Download = require('../index');
+const Download = require('downloader');
 
 let options = {
     rejectUnauthorized: false,
