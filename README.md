@@ -1,10 +1,14 @@
 downloader
-------------------
+==================
+> Version: v0.0.1  
 zip下载解压
+
+使用方法
 ------------------
-#使用方法
 >npm install https://github.com/a631807682/downloader.git
 
+示例代码
+------------------
 ```
 const Download = require('downloader');
 
