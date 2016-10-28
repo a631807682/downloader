@@ -77,7 +77,7 @@ class Downloader {
                     unzipFile.pipe(unziper); //开始解压
                     // console.log('unlink unzip...');
                     try {
-                        fs.unlinkSync(tempPath); //尝试删除 
+                        fs.unlinkSync(tempPath); //尝试删除 避免解压过程中取消后的重复删除
                     } catch (err) {
                         // console.log('unlink...',err);
                     }
