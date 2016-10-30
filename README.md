@@ -48,8 +48,8 @@ const handle = {
     /*
         出错
      */
-    error: function(code, err, module) {
-        console.log('Download or unzip error : ', code, err);
+    error: function( err, module) {
+        console.log('Download or unzip error : ',  err);
     },
     /*
         正在下载
