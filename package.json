@@ -9,6 +9,7 @@
   "author": "cr",
   "license": "ISC",
   "dependencies": {
+    "fs-extra": "^0.30.0",
     "request": "^2.76.0",
     "request-progress": "^2.0.1",
     "unzip2": "^0.2.5"
