@@ -32,24 +32,55 @@
 // }, 100);
 
 
-const UnzipClass = require('../lib/unzip');
+// const UnzipClass = require('../lib/unzip');
 
-let myUnzip = new UnzipClass('./downloadtemp/1477823446663.zip');
-// myUnzip.unzipStream.on('stop', () => {
-//     console.log('stop...');
+// let myUnzip = new UnzipClass('./downloadtemp/1477823446663.zip');
+// // myUnzip.unzipStream.on('stop', () => {
+// //     console.log('stop...');
+// // });
+
+// myUnzip.unzipStream.on('close', () => {
+//     console.log('close...');
 // });
 
-myUnzip.unzipStream.on('close', () => {
-    console.log('close...');
-});
+
+// myUnzip.unzipStream.on('error', (err) => {
+//     console.log('error...', err);
+// });
+
+// myUnzip.start('./output');
+
+// setTimeout(function() {
+//     // myUnzip.stop();
+// }, 100);
 
 
-myUnzip.unzipStream.on('error', (err) => {
-    console.log('error...', err);
-});
+const fs = require('fs'),
+    unzip = require('unzip2'),
+    fstream = require('fstream');
 
-myUnzip.start('./output');
+// let unzipStream = unzip.Extract({ path: './output' });
+// let readStream = fs.createReadStream('./MySocial.zip');
+// // let readStream = fs.createReadStream('./downloadtemp/1477548558694.zip');
+// readStream.pipe(unzipStream);
 
-setTimeout(function() {
-    // myUnzip.stop();
-}, 100);
+let unzipStream = fs.createReadStream('./MySocial.zip');
+let index = 0;
+
+unzipStream.pipe(unzip.Parse())
+    .on('entry', function(entry) {
+        // console.log(entry)
+        var fileName = entry.path;
+        var type = entry.type; // 'Directory' or 'File'
+
+        // console.log('-------', fileName, type);
+        if (type === "File") {
+            index++;
+            entry.pipe(fstream.Writer(`./output/${fileName}`));
+        } else {
+            entry.autodrain();
+        }
+    })
+    .on('close', function() {
+        console.log('close', index);
+    });

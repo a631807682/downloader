@@ -1,4 +1,4 @@
-const Download = require('../index');
+const Download = require('../index').zipDownloader;
 
 let options = {
     rejectUnauthorized: false,
@@ -13,7 +13,7 @@ let options = {
 };
 
 // let url = 'http://www.sqlite.org/2016/sqlite-dll-win64-x64-3130000.zip';
-let url = 'http://192.168.1.205:10060/application/download/58117a8488e9b6319ba20df7';
+let url = 'http://192.168.1.205:10060/application/download/5816c4522c77252007df6b93';
 // let url = 'https://gw.alicdn.com/bao/uploaded/LB1vovgMVXXXXXaXVXXXXXXXXXX.zip';
 // let url = 'https://img.alicdn.com/tps/TB1uu1rNVXXXXaxXXXXXXXXXXXX-160-280.jpg';//解压错误测试
 // let url = 'http://192.168.1.153/info/iproces';//404测试
