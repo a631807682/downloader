@@ -16,7 +16,7 @@ zip下载解压
 示例代码
 ------------------
 ```
-const Download = require('downloader').zipDownloader;
+const Download = require('downloader').unzipDownloader;
 //const Download = require('downloader').simpleDownloader;//普通文件下载
 
 let options = {

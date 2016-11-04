@@ -4,5 +4,5 @@
 //     simpleDownloader: require('./simpleDownloader')
 // };
 
-exports.zipDownloader = require('./zipDownloader');
+exports.unzipDownloader = require('./unzipDownloader');
 exports.simpleDownloader = require('./simpleDownloader');

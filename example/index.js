@@ -1,4 +1,4 @@
-const Download = require('../index').zipDownloader;
+const Download = require('../index').unzipDownloader;
 
 let options = {
     rejectUnauthorized: false,
