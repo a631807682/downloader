@@ -11,7 +11,6 @@ let url = 'http://127.0.0.1:4001/api/public/attachment/download?id=395';
 
 let download = new Download(url, options, { 'abc': 'hahaha' });
 
-
 const handle = {
     /*
         取消
@@ -40,12 +39,6 @@ const handle = {
         //     download.destroy();
         // });
         // download.destroy();
-    },
-    /*
-        下载并解压成功
-     */
-    finished: function(module) {
-        console.log('Download and unzip completed !', module);
     }
 };
 
