@@ -39,7 +39,7 @@ class Downloader {
         let privateModule = self._privateModule; //自定义标记
         let tempPath = self._tempPath; //临时文件
 
-        progress(self._req, { throttle: 200 }) //throttle the progress event to 200ms
+        progress(self._req, { throttle: 200, lengthHeader: 'x-transfer-length' }) //throttle the progress event to 200ms
             .on('response', (res) => {
                 if (res.statusCode != 200 || res.headers['content-type'].includes('application/json')) { //服务自定义错误
                     res.setEncoding('utf-8');

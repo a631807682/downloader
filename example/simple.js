@@ -8,7 +8,7 @@ let options = {
 // let url = 'http://192.168.1.205:4001/api/public/attachment/download?id=421';
 
 // let url = 'http://127.0.0.1:4001/api/public/attachment/download?id=395';
-let url = 'http://192.168.1.205:4001/api/public/attachment/download?id=154';
+let url = 'http://192.168.1.205:4001/api/public/attachment/download?id=371';
 
 let download = new Download(url, options, { 'abc': 'hahaha' });
 
@@ -29,7 +29,8 @@ const handle = {
         正在下载
      */
     started: function(state, module) {
-        console.log('Download progress: ' + state.progress + ' %', module);
+    	 console.log('Download progress: ', state);
+        // console.log('Download progress: ' + state.progress + ' %', module);
     },
     /*
         下载成功
@@ -43,7 +44,7 @@ const handle = {
     }
 };
 
-download.start('./output/abc.jpg', handle);
+download.start('./output', handle);
 
 setTimeout(function() {
     // setImmediate(function() {
