@@ -29,8 +29,8 @@ const handle = {
         正在下载
      */
     started: function(state, module) {
-    	 console.log('Download progress: ', state);
-        // console.log('Download progress: ' + state.progress + ' %', module);
+    	 // console.log('Download progress: ', state);
+        console.log('Download progress: ' + state.progress + ' %', module);
     },
     /*
         下载成功
