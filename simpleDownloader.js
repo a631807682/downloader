@@ -73,14 +73,16 @@ class Downloader {
                 handle.error({ code: errCode.http, message: err }, privateModule);
             })
             .on('end', () => {
-                //重命名
-                fs.move(tempPath, savePath, { clobber: true }, function(err) {
-                    if (err) {
-                        fs.unlinkSync(tempPath);
-                        handle.error({ code: errCode.dir, message: err }, privateModule);
-                    }
-                    handle.downloadFinished(privateModule);
-                });
+                if (fs.existsSync(tempPath)) {
+                    //重命名
+                    fs.move(tempPath, savePath, { clobber: true }, function(err) {
+                        if (err) {
+                            fs.unlinkSync(tempPath);
+                            handle.error({ code: errCode.dir, message: err }, privateModule);
+                        }
+                        handle.downloadFinished(privateModule);
+                    });
+                }
             })
             .on('abort', () => {
                 if (fs.existsSync(tempPath)) { //下载过程中取消
