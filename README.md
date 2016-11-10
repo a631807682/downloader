@@ -10,8 +10,9 @@ zip下载解压,普通文件下载
 示例代码
 ------------------
 ```
-const Download = require('downloader').unzipDownloader;
+const Download = require('downloader').unzipDownloader;//解压下载
 //const Download = require('downloader').simpleDownloader;//普通文件下载
+//const Download = require('downloader').resumeDownloader;//断点续传 需要服务支持
 
 let options = {
     rejectUnauthorized: false,
