@@ -6,3 +6,4 @@
 
 exports.unzipDownloader = require('./unzipDownloader');
 exports.simpleDownloader = require('./simpleDownloader');
+exports.resumeDownloader = require('./resumeDownloader');
