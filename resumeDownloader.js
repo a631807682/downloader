@@ -117,6 +117,7 @@ class Downloader {
                 //计算续传进度
                 let percentage = 0;
                 if (maxSize > 0) {
+                    // console.log(state.size.transferred, localSize, maxSize);
                     percentage = (state.size.transferred + localSize) / maxSize;
                 }
 

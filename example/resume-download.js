@@ -11,9 +11,9 @@ let options = {
 // let url = 'http://www.sqlite.org/2016/sqlite-dll-win64-x64-3130000.zip';
 // let url = 'http://192.168.1.205:4001/api/public/attachment/download?id=421';
 
-// let url = 'http://127.0.0.1:4001/api/public/attachment/download?id=395';
+let url = 'http://127.0.0.1:4001/api/public/attachment/download?id=395';
 // let url = 'http://192.168.1.205:4001/api/public/attachment/download?id=371';
-let url = 'http://127.0.0.1:8000';
+// let url = 'http://127.0.0.1:8000';
 
 let download = new Download(url, options, { 'abc': 'hahaha' });
 
@@ -49,9 +49,9 @@ const handle = {
     }
 };
 
-// download.start('./output/myeclipse.zip', handle);
+// download.start('./output/abc.jpg', handle);
 download.start('./output/abc.zip', handle);
 
-// setTimeout(function() {
-//     download.destroy();
-// }, 3000);
+setTimeout(function() {
+    // download.destroy();
+}, 50);
