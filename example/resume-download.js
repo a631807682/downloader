@@ -53,5 +53,5 @@ const handle = {
 download.start('./output/abc.zip', handle);
 
 setTimeout(function() {
-    // download.destroy();
+    download.destroy();
 }, 50);

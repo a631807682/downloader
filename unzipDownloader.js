@@ -69,6 +69,60 @@ class Downloader {
             .on('end', () => {
                 //fs: EPERM inconsistency between synchronous and asynchronous API on Windows 7
                 //https://github.com/nodejs/node-v0.x-archive/issues/6599
+                // if (fs.existsSync(tempPath)) {
+                //     //解压实例
+                //     let unziper = self._unziper = unzip.Extract({ path: savePath });
+
+                //     unziper.on('finish', () => {
+                //         //解压完成事件
+                //         handle.finished(privateModule);
+                //         fs.unlink(tempPath);
+                //     });
+
+                //     unziper.on('error', (err) => {
+                //         if (['ENOENT', 'EEXIST'].includes(err.code)) {
+                //             // console.log(err.code, '------------')
+                //         } else {
+                //             //解压错误事件
+                //             handle.error({ code: errCode.unzip, message: err }, privateModule);
+                //             fs.unlink(tempPath);
+                //         }
+                //     });
+
+                //     // 需要解压的文件流
+
+                //     // let unzipFile = self._unzipStream = fs.createReadStream('./downloadtemp/1477823446663.zip');
+                //     let unzipFile = self._unzipStream = fs.createReadStream(tempPath);
+
+                //     //下载完成事件
+                //     handle.downloadFinished(privateModule);
+                //     unzipFile.pipe(unziper); //开始解压
+
+                // } else {
+                //     //下载未完成时abort
+                // }
+            })
+            .on('abort', () => {
+                if (fs.existsSync(tempPath)) { //下载过程中取消
+                    try {
+                        fs.unlinkSync(tempPath);
+                    } catch (err) {
+                        // console.log('may not exist');
+                    }
+                }
+
+                if (self._unziper) {
+                    // self._unziper.end();
+                    if (self._unzipStream) { //解压过程中取消
+                        self._unzipStream.close();
+                    }
+                }
+
+                //解压读取流 到 解压写入流 会创建文件
+                handle.destroyed(privateModule);
+
+            })
+            .pipe(fs.createWriteStream(tempPath).on('finish', () => {
                 if (fs.existsSync(tempPath)) {
                     //解压实例
                     let unziper = self._unziper = unzip.Extract({ path: savePath });
@@ -97,32 +151,8 @@ class Downloader {
                     //下载完成事件
                     handle.downloadFinished(privateModule);
                     unzipFile.pipe(unziper); //开始解压
-
-                } else {
-                    //下载未完成时abort
                 }
-            })
-            .on('abort', () => {
-                if (fs.existsSync(tempPath)) { //下载过程中取消
-                    try {
-                        fs.unlinkSync(tempPath);
-                    } catch (err) {
-                        // console.log('may not exist');
-                    }
-                }
-
-                if (self._unziper) {
-                    // self._unziper.end();
-                    if (self._unzipStream) { //解压过程中取消
-                        self._unzipStream.close();
-                    }
-                }
-
-                //解压读取流 到 解压写入流 会创建文件
-                handle.destroyed(privateModule);
-
-            })
-            .pipe(fs.createWriteStream(tempPath));
+            }));
     }
 
     /**

@@ -67,4 +67,4 @@ setTimeout(function() {
         // });
     // download.destroy();
     download.start('./output', handle);
-}, 1000);
+}, 200);

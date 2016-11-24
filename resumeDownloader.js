@@ -88,6 +88,7 @@ class Downloader {
                         self._req.abort(); //结束request
                     });
                 } else { // 正常
+                    let writeStream;
                     switch (res.statusCode) {
                         case 200:
                             if (res.headers['content-length'] != undefined) {
@@ -96,7 +97,8 @@ class Downloader {
                             } else {
                                 console.warn('warning: res.headers.content-length is not defined , can not calculate progress .');
                             }
-                            self._req.pipe(fs.createWriteStream(tempPath)); //文件流覆盖
+                            writeStream = fs.createWriteStream(tempPath);
+                            // self._req.pipe(fs.createWriteStream(tempPath)); //文件流覆盖
                             break;
                         case 206:
                             if (res.headers['x-transfer-length'] != undefined) {
@@ -104,11 +106,30 @@ class Downloader {
                             } else {
                                 console.warn('warning: res.headers.x-transfer-length is not defined , can not separate download .');
                             }
-                            self._req.pipe(fs.createWriteStream(tempPath, { 'flags': 'a' })); //文件流增加
+                            writeStream = fs.createWriteStream(tempPath, { 'flags': 'a' });
+                            // self._req.pipe(fs.createWriteStream(tempPath, { 'flags': 'a' })); //文件流增加
                             break;
                         default:
                             console.error('res.statusCode is not handle', res.statusCode);
                             break;
+                    }
+
+                    if (writeStream) {
+                        writeStream.on('finish', () => {
+                            if (fs.existsSync(tempPath)) {
+                                let stat = fs.statSync(tempPath);
+                                //非中断,下载完成或未知文件大小
+                                if ((!abortFlag)) {
+                                    fs.move(tempPath, self._savePath, { clobber: true }, function(err) {
+                                        if (err) {
+                                            handle.error({ code: errCode.dir, message: err }, privateModule);
+                                        }
+                                        handle.downloadFinished(privateModule);
+                                    });
+                                }
+                            }
+                        });
+                        self._req.pipe(writeStream);
                     }
 
                 }
@@ -132,18 +153,18 @@ class Downloader {
                 handle.error({ code: errCode.http, message: err }, privateModule);
             })
             .on('end', () => {
-                if (fs.existsSync(tempPath)) {
-                    let stat = fs.statSync(tempPath);
-                    //非中断,下载完成或未知文件大小
-                    if ((!abortFlag)) {
-                        fs.move(tempPath, self._savePath, { clobber: true }, function(err) {
-                            if (err) {
-                                handle.error({ code: errCode.dir, message: err }, privateModule);
-                            }
-                            handle.downloadFinished(privateModule);
-                        });
-                    }
-                }
+                // if (fs.existsSync(tempPath)) {
+                //     let stat = fs.statSync(tempPath);
+                //     //非中断,下载完成或未知文件大小
+                //     if ((!abortFlag)) {
+                //         fs.move(tempPath, self._savePath, { clobber: true }, function(err) {
+                //             if (err) {
+                //                 handle.error({ code: errCode.dir, message: err }, privateModule);
+                //             }
+                //             handle.downloadFinished(privateModule);
+                //         });
+                //     }
+                // }
             })
             .on('abort', () => {
                 abortFlag = true;

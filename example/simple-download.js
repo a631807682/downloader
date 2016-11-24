@@ -5,10 +5,10 @@ let options = {
 
 };
 
-// let url = 'http://192.168.1.205:4001/api/public/attachment/download?id=421';
+let url = 'http://192.168.1.205:4001/api/public/attachment/download?id=421';
 
 // let url = 'http://127.0.0.1:4001/api/public/attachment/download?id=395';
-let url = 'http://192.168.1.205:4001/api/public/attachment/download?id=371';
+// let url = 'http://192.168.1.205:4001/api/public/attachment/download?id=371';
 
 let download = new Download(url, options, { 'abc': 'hahaha' });
 
