@@ -19,7 +19,8 @@ class Downloader {
             fs.mkdirSync(tempDirectory);
         }
 
-        this._req = request(url, options); //request实例
+        this._url = url;
+        this._options = options;
         this._privateModule = privateModule; //自定义标记
         this._tempPath = `${tempDirectory}/${new Date().getTime()}`; //临时文件
         this._savePath = ''; //下载路径
@@ -39,6 +40,7 @@ class Downloader {
         let privateModule = self._privateModule; //自定义标记
         let tempPath = self._tempPath; //临时文件
 
+        self._req = request(self._url, self._options); //request实例
         progress(self._req, { throttle: 200, lengthHeader: 'x-transfer-length' }) //throttle the progress event to 200ms
             .on('response', (res) => {
                 if (res.statusCode != 200 || res.headers['content-type'].includes('application/json')) { //服务自定义错误
