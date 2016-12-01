@@ -66,42 +66,6 @@ class Downloader {
                 //错误事件
                 handle.error({ code: errCode.http, message: err }, privateModule);
             })
-            .on('end', () => {
-                //fs: EPERM inconsistency between synchronous and asynchronous API on Windows 7
-                //https://github.com/nodejs/node-v0.x-archive/issues/6599
-                // if (fs.existsSync(tempPath)) {
-                //     //解压实例
-                //     let unziper = self._unziper = unzip.Extract({ path: savePath });
-
-                //     unziper.on('finish', () => {
-                //         //解压完成事件
-                //         handle.finished(privateModule);
-                //         fs.unlink(tempPath);
-                //     });
-
-                //     unziper.on('error', (err) => {
-                //         if (['ENOENT', 'EEXIST'].includes(err.code)) {
-                //             // console.log(err.code, '------------')
-                //         } else {
-                //             //解压错误事件
-                //             handle.error({ code: errCode.unzip, message: err }, privateModule);
-                //             fs.unlink(tempPath);
-                //         }
-                //     });
-
-                //     // 需要解压的文件流
-
-                //     // let unzipFile = self._unzipStream = fs.createReadStream('./downloadtemp/1477823446663.zip');
-                //     let unzipFile = self._unzipStream = fs.createReadStream(tempPath);
-
-                //     //下载完成事件
-                //     handle.downloadFinished(privateModule);
-                //     unzipFile.pipe(unziper); //开始解压
-
-                // } else {
-                //     //下载未完成时abort
-                // }
-            })
             .on('abort', () => {
                 if (fs.existsSync(tempPath)) { //下载过程中取消
                     try {
@@ -122,35 +86,42 @@ class Downloader {
                 handle.destroyed(privateModule);
 
             })
-            .pipe(fs.createWriteStream(tempPath).on('finish', () => {
+            .pipe(fs.createWriteStream(tempPath).on('close', () => {
+                //The 'finish' event is emitted after the stream.end() method has been called, and all data has been flushed to the underlying system.
+
+                //The 'close' event is emitted when the stream and any of its underlying resources (a file descriptor, for example) have been closed. 
+                //The event indicates that no more events will be emitted, and no further computation will occur.
+                //Not all Writable streams will emit the 'close' event.
                 if (fs.existsSync(tempPath)) {
                     //解压实例
+                    // //测试fs释放
+                    // fs.unlinkSync(tempPath);
+                    // console.log(privateModule);
                     let unziper = self._unziper = unzip.Extract({ path: savePath });
+                    // unziper.on('finish', () => {
+                    //     console.log('unziper finish', privateModule);
 
-                    unziper.on('finish', () => {
-                        //解压完成事件
-                        handle.finished(privateModule);
+                    //     // fs.unlink(tempPath);
+                    //     // handle.finished(privateModule);
+                    // });
+
+                    unziper.on('close', () => {
+                        // console.log('unziper close', privateModule);
                         fs.unlink(tempPath);
+                        handle.finished(privateModule);
                     });
 
                     unziper.on('error', (err) => {
-                        if (['ENOENT', 'EEXIST'].includes(err.code)) {
-                            // console.log(err.code, '------------')
-                        } else {
-                            //解压错误事件
-                            handle.error({ code: errCode.unzip, message: err }, privateModule);
-                            fs.unlink(tempPath);
-                        }
+                        handle.error({ code: errCode.unzip, message: err }, privateModule);
+                        fs.unlink(tempPath);
                     });
 
                     // 需要解压的文件流
-
-                    // let unzipFile = self._unzipStream = fs.createReadStream('./downloadtemp/1477823446663.zip');
                     let unzipFile = self._unzipStream = fs.createReadStream(tempPath);
 
                     //下载完成事件
                     handle.downloadFinished(privateModule);
-                    unzipFile.pipe(unziper); //开始解压
+                    unzipFile.pipe(unziper);
                 }
             }));
     }

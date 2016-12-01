@@ -1,10 +1,11 @@
 const Download = require('../index').unzipDownloader,
-    EE = require('events').EventEmitter;
-
+    EE = require('events').EventEmitter,
+    fs = require('fs-extra');
 
 // let arr = [1074];
 // let arr = [1068, 1069, 1070, 1073,  1075];
-let arr = [1068, 1069, 1070, 1073, 1074, 1075];
+let arr = [1442, 1443, 1444, 1445, 1446, 1447, 1448, 1449, 1450];
+// let arr = [1442];
 
 //测试监听所有完成事件
 let index = 0;
@@ -42,14 +43,26 @@ const handle = {
     },
     finished: function(module) {
         console.log('Download and unzip completed !', module);
-        event.emit('all');
+        let sp = `./output/gvim_${module.id}`;
+
+        // fs.renameSync(`./output/${module.id}`, sp);
+        fs.move(`./output/${module.id}`, sp, function(err) {
+            if (err) console.error('move ', err);
+        });
+        // console.log('finished callback', module, fs.existsSync(`./output/${module.id}`))
+        // event.emit('all');
     }
 };
+
+try{
+    fs.removeSync('./output');
+}catch(e){}
+
 
 arr.forEach(id => {
     let url = `http://192.168.1.205:4003/api/public/attachment/download?id=${id}`;
 
     let download = new Download(url, null, { 'id': id });
 
-    download.start('./output', handle);
+    download.start(`./output/${id}`, handle);
 });
