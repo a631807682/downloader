@@ -2,9 +2,18 @@ const Download = require('../index').unzipDownloader,
     EE = require('events').EventEmitter,
     fs = require('fs-extra');
 
+let getId = function(min, max) {
+    let r = [];
+    for (let i = min; i < max; i++) {
+        r.push(i);
+    }
+    return r;
+};
+
 // let arr = [1074];
 // let arr = [1068, 1069, 1070, 1073,  1075];
-let arr = [1442, 1443, 1444, 1445, 1446, 1447, 1448, 1449, 1450];
+// let arr = [1442, 1443, 1444, 1445, 1446, 1447, 1448, 1449, 1451];
+let arr = getId(1451, 1460);
 // let arr = [1442];
 
 //测试监听所有完成事件
@@ -54,9 +63,9 @@ const handle = {
     }
 };
 
-try{
+try {
     fs.removeSync('./output');
-}catch(e){}
+} catch (e) {}
 
 
 arr.forEach(id => {
