@@ -56,8 +56,8 @@ class Downloader {
                         handle.error({ code: errCode.http, message: '未知文件名' }, privateModule);
                         self._req.abort(); //结束request
                     } else {
-                        let match = disposition.match(/(filename=|filename\*='')(.*)$/);
-                        let filename = match && match[2] || 'default-filename.out';
+                        let match = disposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/i);
+                        let filename = match && match[1] || 'default-filename.out';
                         filename = urldecode(filename);
                         savePath = path.join(savePath, filename);
                     }
